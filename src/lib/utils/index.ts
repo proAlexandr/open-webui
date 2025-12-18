@@ -1242,50 +1242,15 @@ export const approximateToHumanReadable = (nanoseconds: number) => {
 	return results.reverse().join(' ');
 };
 
-// Month names used as i18n translation keys — must be English regardless of locale
-const MONTH_NAMES = [
-	'January',
-	'February',
-	'March',
-	'April',
-	'May',
-	'June',
-	'July',
-	'August',
-	'September',
-	'October',
-	'November',
-	'December'
-];
+export const getTimeRange = (timestamp: number) => {
+	const date = dayjs(timestamp * 1000);
 
-export const getTimeRange = (timestamp) => {
-	const now = new Date();
-	const date = new Date(timestamp * 1000); // Convert Unix timestamp to milliseconds
-
-	// Calculate the difference in milliseconds
-	const diffTime = now.getTime() - date.getTime();
-	const diffDays = diffTime / (1000 * 3600 * 24);
-
-	const nowDate = now.getDate();
-	const nowMonth = now.getMonth();
-	const nowYear = now.getFullYear();
-
-	const dateDate = date.getDate();
-	const dateMonth = date.getMonth();
-	const dateYear = date.getFullYear();
-
-	if (nowYear === dateYear && nowMonth === dateMonth && nowDate === dateDate) {
+	if (date.isToday()) {
 		return 'Today';
-	} else if (nowYear === dateYear && nowMonth === dateMonth && nowDate - dateDate === 1) {
+	} else if (date.isYesterday()) {
 		return 'Yesterday';
-	} else if (diffDays <= 7) {
-		return 'Previous 7 days';
-	} else if (diffDays <= 30) {
-		return 'Previous 30 days';
-	} else if (nowYear === dateYear) {
-		return MONTH_NAMES[dateMonth];
 	} else {
-		return date.getFullYear().toString();
+		return date.toDate().toLocaleDateString();
 	}
 };
 
