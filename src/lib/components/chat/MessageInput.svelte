@@ -1339,7 +1339,7 @@
 						/>
 					</div>
 					<form
-						class="w-full flex flex-col gap-1.5 {recording ? 'hidden' : ''}"
+						class="w-full flex flex-col {recording ? 'hidden' : ''}"
 						on:submit|preventDefault={() => {
 							// check if selectedModels support image input
 							dispatch('submit', prompt);
@@ -1378,9 +1378,9 @@
 
 						<div
 							id="message-input-container"
-							class="flex-1 flex flex-col relative w-full shadow-lg rounded-3xl border {$temporaryChatEnabled
+							class="flex-1 flex flex-col relative w-full border {$temporaryChatEnabled
 								? 'border-dashed border-gray-100 dark:border-gray-800 hover:border-gray-200 focus-within:border-gray-200 hover:dark:border-gray-700 focus-within:dark:border-gray-700'
-								: ' border-gray-100/30 dark:border-gray-850/30 hover:border-gray-200 focus-within:border-gray-100 hover:dark:border-gray-800 focus-within:dark:border-gray-800'}  transition px-1 bg-white/5 dark:bg-gray-500/5 backdrop-blur-sm dark:text-gray-100"
+								: ' border-gray-400 dark:border-gray-850/30 hover:border-gray-600 focus-within:border-gray-500 hover:dark:border-gray-800 focus-within:dark:border-gray-800'}  transition bg-white/5 dark:bg-gray-500/5 backdrop-blur-sm dark:text-gray-100"
 							dir={$settings?.chatDirection ?? 'auto'}
 						>
 							{#if atSelectedModel !== undefined}
@@ -1505,9 +1505,9 @@
 								</div>
 							{/if}
 
-							<div class="px-2.5">
+							<div class="px-2.5 border-b border-gray-400">
 								<div
-									class="scrollbar-hidden rtl:text-right ltr:text-left bg-transparent dark:text-gray-100 outline-hidden w-full pb-1 px-1 resize-none h-fit max-h-96 overflow-auto {files.length ===
+									class="scrollbar-hidden rtl:text-right ltr:text-left bg-transparent dark:text-gray-100 outline-hidden w-full pb-2 px-1 resize-none h-fit max-h-96 overflow-auto {files.length ===
 									0
 										? atSelectedModel !== undefined
 											? 'pt-1.5'
@@ -1701,8 +1701,8 @@
 								</div>
 							</div>
 
-							<div class=" flex justify-between mt-0.5 mb-2.5 mx-0.5 max-w-full" dir="ltr">
-								<div class="ml-1 self-end flex items-center flex-1 min-w-0">
+							<div class=" flex justify-between max-w-full" dir="ltr">
+								<div class="self-end flex items-center flex-1 min-w-0">
 									<InputMenu
 										bind:files
 										selectedModels={selectedModelIds}
@@ -1758,18 +1758,12 @@
 										<button
 											type="button"
 											id="input-menu-button"
-											class="bg-transparent hover:bg-gray-100 text-gray-700 dark:text-white dark:hover:bg-gray-800 rounded-full size-8 flex justify-center items-center outline-hidden focus:outline-hidden shrink-0"
+											class="bg-transparent hover:bg-gray-100 text-gray-700 dark:text-white dark:hover:bg-gray-800 border-r border-gray-400 box-content size-8 flex justify-center items-center outline-hidden focus:outline-hidden shrink-0"
 											aria-label={$i18n.t('More')}
 										>
 											<PlusAlt className="size-5.5" />
 										</button>
 									</InputMenu>
-
-									{#if showWebSearchButton || showImageGenerationButton || showCodeInterpreterButton || Object.keys(availableTools).length > 0 || Object.keys(availableSkills).length > 0 || (toggleFilters && toggleFilters.length > 0)}
-										<div
-											class="flex self-center w-[1px] h-4 mx-1 bg-gray-200/50 dark:bg-gray-800/50 shrink-0"
-										/>
-									{/if}
 
 									<div class="flex flex-1 items-center min-w-0 overflow-x-auto scrollbar-none">
 										{#if selectedModelIds.length === 1 && $models.find((m) => m.id === selectedModelIds[0])?.has_user_valves}
@@ -1791,7 +1785,7 @@
 											</div>
 										{/if}
 
-										<div class="ml-1 flex gap-1.5 shrink-0">
+										<div class="flex shrink-0">
 											{#each toggleFilters as filter}
 												<Tooltip content={filter?.name} placement="top">
 													<button
@@ -1803,7 +1797,7 @@
 															}
 														}}
 														type="button"
-														class="group p-[7px] flex gap-1.5 items-center text-sm rounded-full transition-colors duration-300 focus:outline-hidden max-w-full overflow-hidden {selectedFilterIds.includes(
+														class="group p-[6px] flex gap-1.5 items-center text-sm border-r border-gray-400 transition-colors duration-300 focus:outline-hidden max-w-full overflow-hidden {selectedFilterIds.includes(
 															filter.id
 														)
 															? 'text-sky-500 dark:text-sky-300 bg-sky-50 hover:bg-sky-100 dark:bg-sky-400/10 dark:hover:bg-sky-600/10 border border-sky-200/40 dark:border-sky-500/20'
@@ -1836,13 +1830,12 @@
 															onWebSearchToggle(webSearchEnabled);
 														}}
 														type="button"
-														class="group p-[7px] flex gap-1.5 items-center text-sm rounded-full transition-colors duration-300 focus:outline-hidden max-w-full overflow-hidden {webSearchEnabled ||
+														class="group p-[8px] flex gap-1.5 items-center text-sm border-r border-gray-400 transition-colors duration-300 focus:outline-hidden max-w-full overflow-hidden {webSearchEnabled ||
 														($settings?.webSearch ?? false) === 'always'
 															? ' text-sky-500 dark:text-sky-300 bg-sky-50 hover:bg-sky-100 dark:bg-sky-400/10 dark:hover:bg-sky-600/10 border border-sky-200/40 dark:border-sky-500/20'
 															: 'bg-transparent text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 '}"
 													>
 														<GlobeAlt className="size-4" strokeWidth="1.75" />
-														{$i18n.t('Web Search')}
 													</button>
 												</Tooltip>
 											{/if}
@@ -1853,12 +1846,11 @@
 														on:click|preventDefault={() =>
 															(imageGenerationEnabled = !imageGenerationEnabled)}
 														type="button"
-														class="group p-[7px] flex gap-1.5 items-center text-sm rounded-full transition-colors duration-300 focus:outline-hidden max-w-full overflow-hidden {imageGenerationEnabled
+														class="group p-[8px] flex gap-1.5 items-center text-sm border-r border-gray-400 transition-colors duration-300 focus:outline-hidden max-w-full overflow-hidden {imageGenerationEnabled
 															? ' text-sky-500 dark:text-sky-300 bg-sky-50 hover:bg-sky-100 dark:bg-sky-400/10 dark:hover:bg-sky-700/10 border border-sky-200/40 dark:border-sky-500/20'
 															: 'bg-transparent text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 '}"
 													>
 														<Photo className="size-4" strokeWidth="1.75" />
-														{$i18n.t('Image')}
 													</button>
 												</Tooltip>
 											{/if}
@@ -1873,15 +1865,14 @@
 														on:click|preventDefault={() =>
 															(codeInterpreterEnabled = !codeInterpreterEnabled)}
 														type="button"
-														class=" group p-[7px] flex gap-1.5 items-center text-sm transition-colors duration-300 max-w-full overflow-hidden {codeInterpreterEnabled
+														class=" group p-[8px] flex gap-1.5 items-center text-sm border-r border-gray-400 transition-colors duration-300 max-w-full overflow-hidden {codeInterpreterEnabled
 															? ' text-sky-500 dark:text-sky-300 bg-sky-50 hover:bg-sky-100 dark:bg-sky-400/10 dark:hover:bg-sky-700/10 border border-sky-200/40 dark:border-sky-500/20'
 															: 'bg-transparent text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 '} {($settings?.highContrastMode ??
 														false)
 															? 'm-1'
-															: 'focus:outline-hidden rounded-full'}"
+															: 'focus:outline-hidden'}"
 													>
-														<Terminal className="size-3.5" strokeWidth="2" />
-														{$i18n.t('Code Interpreter')}
+														<Terminal className="size-4" strokeWidth="2" />
 													</button>
 												</Tooltip>
 											{/if}
@@ -1901,7 +1892,7 @@
 																}
 															}}
 															type="button"
-															class="group p-[7px] flex gap-1.5 items-center text-sm rounded-full transition-colors duration-300 focus:outline-hidden max-w-full overflow-hidden {availableSkills[
+															class="group p-[6px] flex gap-1.5 items-center text-sm border-r border-gray-400 transition-colors duration-300 focus:outline-hidden max-w-full overflow-hidden {availableSkills[
 																skillId
 															].enabled
 																? 'text-sky-500 dark:text-sky-300 bg-sky-50 hover:bg-sky-100 dark:bg-sky-400/10 dark:hover:bg-sky-600/10 border border-sky-200/40 dark:border-sky-500/20'
@@ -1926,7 +1917,7 @@
 																}
 															}}
 															type="button"
-															class="group p-[7px] flex gap-1.5 items-center text-sm rounded-full transition-colors duration-300 focus:outline-hidden max-w-full overflow-hidden {availableTools[
+															class="group p-[6px] flex gap-1.5 items-center text-sm border-r border-gray-400 transition-colors duration-300 focus:outline-hidden max-w-full overflow-hidden {availableTools[
 																toolId
 															].enabled
 																? 'text-sky-500 dark:text-sky-300 bg-sky-50 hover:bg-sky-100 dark:bg-sky-400/10 dark:hover:bg-sky-600/10 border border-sky-200/40 dark:border-sky-500/20'
@@ -1958,7 +1949,7 @@
 									</div>
 								</div>
 
-								<div class="self-end flex space-x-1 mr-1 shrink-0 gap-[0.5px]">
+								<div class="self-end flex shrink-0">
 									{#if isActive && prompt === '' && files.length === 0}
 										<div class=" flex items-center">
 											<Tooltip content={$i18n.t('Stop')}>
@@ -1989,14 +1980,14 @@
 											<Tooltip content={$i18n.t('Create note')} className=" flex items-center">
 												<button
 													id="create-note-button"
-													class=" text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-200 transition rounded-full p-1.5 -mr-1 self-center"
+													class=" text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:text-gray-200 transition p-1.5 self-center border-l border-gray-400"
 													type="button"
 													disabled={prompt === '' && files.length === 0}
 													on:click={() => {
 														createNote();
 													}}
 												>
-													<Note className="size-4.5 translate-y-[0.5px]" />
+													<Note className="size-5 translate-y-[0.5px]" />
 												</button>
 											</Tooltip>
 										{/if}
@@ -2015,7 +2006,7 @@
 												<Tooltip content={$i18n.t('Dictate')}>
 													<button
 														id="voice-input-button"
-														class=" text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-200 transition rounded-full p-1.5 self-center mr-0.5"
+														class=" text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:text-gray-200 transition p-1.5 self-center border-l border-gray-400"
 														type="button"
 														on:click={async () => {
 															try {
@@ -2066,7 +2057,7 @@
 												<!-- {$i18n.t('Call')} -->
 												<Tooltip content={$i18n.t('Voice mode')}>
 													<button
-														class=" bg-black text-white hover:bg-gray-900 dark:bg-white dark:text-black dark:hover:bg-gray-100 transition rounded-full p-1.5 self-center"
+														class="bg-white text-gray-600 hover:bg-gray-100 dark:bg-white dark:text-black dark:hover:bg-gray-100 transition border-l border-gray-400 self-center size-8 flex justify-center items-center"
 														type="button"
 														on:click={async () => {
 															if (selectedModels.length > 1) {
@@ -2135,7 +2126,7 @@
 														id="send-message-button"
 														class="{!(prompt === '' && files.length === 0) || uploadPending
 															? 'bg-black text-white hover:bg-gray-900 dark:bg-white dark:text-black dark:hover:bg-gray-100 '
-															: 'text-white bg-gray-200 dark:text-gray-900 dark:bg-gray-700 disabled'} transition rounded-full p-1.5 self-center"
+															: 'text-white bg-gray-200 dark:text-gray-900 dark:bg-gray-700 disabled'} transition p-1.5 self-center border-l border-grey-400"
 														type="submit"
 														disabled={(prompt === '' && files.length === 0) || uploadPending}
 													>
