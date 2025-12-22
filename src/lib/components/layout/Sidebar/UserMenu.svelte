@@ -122,7 +122,7 @@
 
 	<div slot="content">
 		<div
-			class="{className} rounded-2xl px-1 py-1 border border-gray-100 dark:border-gray-800 z-50 bg-white dark:bg-gray-850 dark:text-white shadow-lg text-sm"
+			class="{className} px-1 py-1 border border-gray-400 dark:border-gray-800 z-50 bg-white dark:bg-gray-850 dark:text-white text-sm"
 		>
 			{#if profile}
 				<div class=" flex gap-3.5 w-full p-2.5 items-center">
@@ -230,7 +230,7 @@
 					</div>
 				{/if}
 
-				<hr class=" border-gray-50/30 dark:border-gray-800/30 my-1.5 p-0" />
+				<hr class="border-gray-400 dark:border-gray-800/30 mb-1.5 p-0" />
 			{/if}
 
 			<button
@@ -557,7 +557,7 @@
 			{/if}
 
 			{#if help}
-				<hr class=" border-gray-50/30 dark:border-gray-800/30 my-1 p-0" />
+				<hr class="border-gray-400 dark:border-gray-800/30 my-1 p-0" />
 
 				<!-- {$i18n.t('Help')} -->
 
@@ -617,10 +617,10 @@
 				</button>
 			{/if}
 
-			<hr class=" border-gray-50/30 dark:border-gray-800/30 my-1 p-0" />
+			<hr class=" border-gray-400 dark:border-gray-800/30 my-1 p-0" />
 
 			<button
-				class="flex rounded-xl py-1.5 px-3 w-full hover:bg-gray-50 dark:hover:bg-gray-800 transition cursor-pointer select-none"
+				class="flex py-1.5 px-3 w-full bg-red-50 hover:bg-red-200 cursor-pointer dark:hover:bg-gray-800 transition"
 				type="button"
 				on:click={async () => {
 					const res = await userSignOut();
