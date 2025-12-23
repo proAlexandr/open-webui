@@ -58,6 +58,16 @@
 	export let deleteChatHandler: (id: string) => void;
 	export let moveChatHandler: (id: string, folderId: string) => void;
 
+	let hasCostCount = 0
+	$: totalCost = Object.values(history.messages).reduce((sum, message) => {
+		if (message.usage && typeof message.usage.cost === 'number') {
+			hasCostCount += 1;
+			return sum + message.usage.cost;
+		}
+		return sum;
+	}, 0);
+	$: costIsLarger = hasCostCount < history.messages.length;
+
 	let closedBannerIds = [];
 
 	const getDismissedBannerIds = (): string[] => {
@@ -88,7 +98,7 @@
 >
 	<div class="flex items-center w-full pl-1.5 pr-1">
 		<div class=" flex max-w-full w-full mx-auto px-1.5 md:px-2 bg-transparent">
-			<div class="flex items-center w-full max-w-full">
+			<div class="flex items-center w-full max-w-full justify-between">
 				{#if $mobile && !$showSidebar}
 					<div
 						class="-translate-x-0.5 mr-1 mt-1 self-start flex flex-none items-center text-gray-600 dark:text-gray-400"
@@ -109,7 +119,7 @@
 				{/if}
 
 				<div
-					class="flex-1 overflow-hidden max-w-full
+					class="overflow-hidden
 			{$showSidebar ? 'ml-1' : ''}
 			"
 				>
@@ -121,6 +131,13 @@
 						/>
 					{/if}
 				</div>
+
+				{#if totalCost > 0}
+					<div class="hidden md:flex items-center text-sm font-medium text-gray-600 dark:text-gray-400 mr-2">
+						<span>Cost: {costIsLarger ? "> " : ''}${totalCost.toFixed(4).substr(0, 4)}</span>
+						<span class="text-gray-300">{totalCost.toFixed(4).substr(4, 6)}</span>
+					</div>
+				{/if}
 
 				<div class="self-start flex flex-none items-center text-gray-600 dark:text-gray-400">
 					<!-- <div class="md:hidden flex self-center w-[1px] h-5 mx-2 bg-gray-300 dark:bg-stone-700" /> -->
