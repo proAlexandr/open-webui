@@ -14,7 +14,7 @@
 		unescapeHtml
 	} from '$lib/utils';
 
-	import 'highlight.js/styles/github-dark.min.css';
+	import 'highlight.js/styles/github.min.css';
 	import equal from 'fast-deep-equal';
 
 	import CodeEditor from '$lib/components/common/CodeEditor.svelte';
