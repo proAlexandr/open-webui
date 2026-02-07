@@ -179,6 +179,7 @@ class ChatTitleIdResponse(BaseModel):
     title: str
     updated_at: int
     created_at: int
+    cost: float | None = None
     last_read_at: int | None = None
     snippet: str | None = None
 
@@ -1079,7 +1080,7 @@ class ChatTable:
         db: AsyncSession | None = None,
     ) -> list[ChatTitleIdResponse]:
         async with get_async_db_context(db) as session:
-            stmt = select(Chat.id, Chat.title, Chat.updated_at, Chat.created_at, Chat.last_read_at).filter_by(
+            stmt = select(Chat.id, Chat.title, Chat.updated_at, Chat.created_at, Chat.last_read_at, Chat.chat).filter_by(
                 user_id=user_id
             )
 
@@ -1110,6 +1111,7 @@ class ChatTable:
                         'updated_at': chat[2],
                         'created_at': chat[3],
                         'last_read_at': chat[4],
+                        'cost': self.calculate_chat_cost(chat[5], chat_id=chat[0]),
                     }
                 )
                 for chat in all_chats
@@ -1953,6 +1955,28 @@ class ChatTable:
                 return True
         except Exception:
             return False
+
+    def calculate_chat_cost(self, chat: dict | None, chat_id: str | None = None) -> float | None:
+        """Calculate the total cost for a chat by summing message usage costs."""
+        try:
+            messages = (chat or {}).get('history', {}).get('messages', {})
+            if not messages:
+                return None
+
+            total_cost = 0.0
+            has_cost = False
+
+            for message in messages.values():
+                usage = message.get('usage', {})
+                cost = usage.get('cost')
+                if isinstance(cost, (int, float)):
+                    total_cost += cost
+                    has_cost = True
+
+            return total_cost if has_cost else None
+        except Exception as e:
+            log.warning(f'Error calculating cost for chat {chat_id}: {e}')
+            return None
 
     async def insert_chat_files(
         self,

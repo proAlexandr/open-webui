@@ -181,6 +181,18 @@
 		}
 	};
 
+	// Calculate total cost per time_range group
+	$: totalCostByTimeRange = $chats
+		? $chats.reduce(
+				(acc, chat) => {
+					const timeRange = chat.time_range || 'Unknown';
+					acc[timeRange] = (acc[timeRange] || 0) + (chat.cost ?? 0);
+					return acc;
+				},
+				{} as Record<string, number>
+			)
+		: {};
+
 	$: if ($selectedFolder) {
 		initFolders();
 	}
@@ -1514,21 +1526,25 @@
 							{#if $chats}
 								{#each $chats as chat, idx (`chat-${chat?.id ?? idx}`)}
 									{#if idx === 0 || (idx > 0 && chat.time_range !== $chats[idx - 1].time_range)}
+										{@const timeRange = chat.time_range || 'Unknown'}
+										{@const groupCost = (totalCostByTimeRange[timeRange] ?? 0).toFixed(4)}
 										<div
-											class="w-full pl-2.5 text-xs border-b border-gray-400 dark:text-gray-500 font-medium {idx ===
+											class="w-full pl-2.5 text-xs border-b border-gray-400 dark:text-gray-500 font-medium flex justify-between {idx ===
 											0
 												? ''
 												: 'pt-5'} pb-1 mb-1"
 										>
-											{#if chat.time_range === 'Today' || chat.time_range === 'Yesterday'}
-												{$i18n.t(chat.time_range)}
-											{:else}
-												{chat.time_range}
-											{/if}
-											<!-- localisation keys for time_range to be recognized from the i18next parser (so they don't get automatically removed):
-							{$i18n.t('Today')}
-							{$i18n.t('Yesterday')}
-							-->
+											<div>
+												{#if timeRange === 'Today' || timeRange === 'Yesterday'}
+													{$i18n.t(timeRange)}
+												{:else}
+													{timeRange}
+												{/if}
+											</div>
+											<div class="flex">
+												<span>${groupCost.substr(0, 4)}</span>
+												<span class="text-gray-400">{groupCost.substr(4, 6)}</span>
+											</div>
 										</div>
 									{/if}
 
