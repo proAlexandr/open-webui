@@ -51,6 +51,7 @@ def normalize_usage(usage: dict) -> dict:
     return result
 
 
+# <<<<<<< HEAD
 USAGE_TOKEN_KEYS = {
     'input_tokens',
     'output_tokens',
@@ -134,6 +135,57 @@ def merge_usage(current: dict | None, incoming: dict | None) -> dict:
             )
 
     return result
+
+
+# def merge_usage(total: dict | None, usage: dict | None) -> dict:
+#     """Merge usage from multiple model round-trips into one assistant-message usage."""
+#     if not total:
+#         return dict(usage or {})
+#     if not usage:
+#         return dict(total)
+
+#     additive_keys = {
+#         'input_tokens',
+#         'output_tokens',
+#         'total_tokens',
+#         'prompt_tokens',
+#         'completion_tokens',
+#         'prompt_eval_count',
+#         'eval_count',
+#         'prompt_n',
+#         'predicted_n',
+#         'cost',
+#         'input_cost',
+#         'output_cost',
+#         'total_cost',
+#     }
+#     token_detail_keys = {
+#         'input_tokens_details',
+#         'output_tokens_details',
+#         'prompt_tokens_details',
+#         'completion_tokens_details',
+#     }
+
+#     merged = dict(total)
+#     for key, value in usage.items():
+#         if (
+#             key in additive_keys
+#             and isinstance(value, (int, float))
+#             and isinstance(merged.get(key, 0), (int, float))
+#         ):
+#             merged[key] = merged.get(key, 0) + value
+#         elif key in token_detail_keys and isinstance(value, dict):
+#             details = dict(merged.get(key) or {})
+#             for detail_key, detail_value in value.items():
+#                 if isinstance(detail_value, (int, float)) and isinstance(details.get(detail_key, 0), (int, float)):
+#                     details[detail_key] = details.get(detail_key, 0) + detail_value
+#                 else:
+#                     details[detail_key] = detail_value
+#             merged[key] = details
+#         else:
+#             merged[key] = value
+
+#     return normalize_usage(merged)
 
 
 def convert_ollama_tool_call_to_openai(tool_calls: list) -> list:

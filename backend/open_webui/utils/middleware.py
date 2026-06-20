@@ -4122,8 +4122,16 @@ async def streaming_chat_response_handler(response, ctx):
 
                                         # Normalize and capture usage for DB persistence
                                         if response_metadata.get('usage'):
+# <<<<<<< HEAD
                                             usage = merge_usage(usage, response_metadata['usage'])
                                             response_metadata['usage'] = usage
+# ||||||| parent of bcc81604a (fix: do not discard tools usage cost)
+#                                             response_metadata['usage'] = normalize_usage(response_metadata['usage'])
+#                                             usage = response_metadata['usage']
+# =======
+#                                             usage = merge_usage(usage, normalize_usage(response_metadata['usage']))
+#                                             response_metadata['usage'] = usage
+# >>>>>>> bcc81604a (fix: do not discard tools usage cost)
 
                                         processed_data.update(response_metadata)
                                         processed_data.pop('done', None)
@@ -4151,7 +4159,13 @@ async def streaming_chat_response_handler(response, ctx):
                                     raw_usage = data.get('usage', {}) or {}
                                     raw_usage.update(data.get('timings', {}))  # llama.cpp
                                     if raw_usage:
+# <<<<<<< HEAD
                                         usage = merge_usage(usage, raw_usage)
+# ||||||| parent of bcc81604a (fix: do not discard tools usage cost)
+#                                         usage = normalize_usage(raw_usage)
+# =======
+#                                         usage = merge_usage(usage, normalize_usage(raw_usage))
+# >>>>>>> bcc81604a (fix: do not discard tools usage cost)
                                         await event_emitter(
                                             {
                                                 'type': 'chat:completion',
@@ -5064,9 +5078,9 @@ async def streaming_chat_response_handler(response, ctx):
                                 if CODE_INTERPRETER_BLOCKED_MODULES:
                                     blocking_code = textwrap.dedent(f"""
                                         import builtins
-    
+
                                         BLOCKED_MODULES = {CODE_INTERPRETER_BLOCKED_MODULES}
-    
+
                                         _real_import = builtins.__import__
                                         async def restricted_import(name, globals=None, locals=None, fromlist=(), level=0):
                                             if name.split('.')[0] in BLOCKED_MODULES:
@@ -5076,7 +5090,7 @@ async def streaming_chat_response_handler(response, ctx):
                                                         f"Direct import of module {{name}} is restricted."
                                                     )
                                             return _real_import(name, globals, locals, fromlist, level)
-    
+
                                         builtins.__import__ = restricted_import
                                     """)
                                     code = blocking_code + '\n' + code

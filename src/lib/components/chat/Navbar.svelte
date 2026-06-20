@@ -58,15 +58,16 @@
 	export let deleteChatHandler: (id: string) => void;
 	export let moveChatHandler: (id: string, folderId: string) => void;
 
-	let hasCostCount = 0
-	$: totalCost = Object.values(history.messages).reduce((sum, message) => {
+	$: messagesWithCost = Object.values(history.messages).filter(
+		(message) => message.usage && typeof message.usage.cost === 'number'
+	);
+	$: totalCost = messagesWithCost.reduce((sum, message) => {
 		if (message.usage && typeof message.usage.cost === 'number') {
-			hasCostCount += 1;
 			return sum + message.usage.cost;
 		}
 		return sum;
 	}, 0);
-	$: costIsLarger = hasCostCount < history.messages.length;
+	$: costIsLarger = messagesWithCost.length < Object.values(history.messages).length;
 
 	let closedBannerIds = [];
 
