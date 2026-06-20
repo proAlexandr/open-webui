@@ -54,6 +54,7 @@
 	export let showCommands = false;
 
 	export let imageGenerationEnabled = false;
+	export let toolsEnabled = false;
 	export let codeInterpreterEnabled = false;
 	export let webSearchEnabled = false;
 
@@ -235,6 +236,7 @@
 						bind:imageGenerationEnabled
 						bind:codeInterpreterEnabled
 						bind:webSearchEnabled
+						bind:toolsEnabled
 						bind:atSelectedModel
 						bind:showCommands
 						bind:dragged

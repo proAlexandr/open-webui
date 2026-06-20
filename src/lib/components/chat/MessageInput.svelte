@@ -136,6 +136,7 @@
 
 	export let imageGenerationEnabled = false;
 	export let webSearchEnabled = false;
+	export let toolsEnabled = false;
 	export let codeInterpreterEnabled = false;
 
 	export let pendingOAuthTools = [];
@@ -176,6 +177,7 @@
 		selectedFilterIds,
 		imageGenerationEnabled,
 		webSearchEnabled,
+		toolsEnabled,
 		codeInterpreterEnabled
 	});
 
@@ -510,6 +512,11 @@
 		modelCapabilitiesById
 	);
 
+	let builtinToolsCapableModels = [];
+	$: builtinToolsCapableModels = (atSelectedModel?.id ? [atSelectedModel.id] : selectedModels).filter(
+		(model) => $models.find((m) => m.id === model)?.info?.meta?.capabilities?.builtin_tools ?? true
+	);
+
 	let terminalCapableModels = [];
 	$: terminalCapableModels = getCapableModelIds(
 		selectedModelIds,
@@ -540,6 +547,15 @@
 		selectedModelIds.length === codeInterpreterCapableModels.length &&
 		$config?.features?.enable_code_interpreter &&
 		($_user.role === 'admin' || $_user?.permissions?.features?.code_interpreter);
+
+	let showToolsButton = false;
+	$: showToolsButton =
+		(atSelectedModel?.id ? [atSelectedModel.id] : selectedModels).length ===
+		builtinToolsCapableModels.length;
+
+	$: if (!showToolsButton && toolsEnabled) {
+		toolsEnabled = false;
+	}
 
 	// Disable code interpreter when terminal is active (mutually exclusive)
 	$: if ($selectedTerminalId && codeInterpreterEnabled) {
@@ -1654,6 +1670,7 @@
 															selectedFilterIds = [];
 
 															webSearchEnabled = false;
+															toolsEnabled = false;
 															imageGenerationEnabled = false;
 															codeInterpreterEnabled = false;
 														}
@@ -1783,6 +1800,24 @@
 													</button>
 												</Tooltip>
 											</div>
+										{/if}
+
+										{#if showToolsButton}
+											<Tooltip content={$i18n.t('Tools')} placement="top">
+												<button
+													on:click|preventDefault={() => (toolsEnabled = !toolsEnabled)}
+													type="button"
+													class="group flex justify-center items-center text-sm size-8 box-content border-r border-gray-400 transition-colors duration-300 focus:outline-hidden max-w-full overflow-hidden {toolsEnabled
+														? ' text-sky-500 dark:text-sky-300 bg-sky-50 hover:bg-sky-100 dark:bg-sky-400/10 dark:hover:bg-sky-600/10'
+														: 'bg-transparent text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 '}"
+													aria-label={toolsEnabled
+														? $i18n.t('Disable Tools')
+														: $i18n.t('Enable Tools')}
+													aria-pressed={toolsEnabled}
+												>
+													<Wrench className="size-4" strokeWidth="1.75" />
+												</button>
+											</Tooltip>
 										{/if}
 
 										<div class="flex shrink-0">

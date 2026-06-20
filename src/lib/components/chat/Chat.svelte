@@ -233,6 +233,7 @@
 	let chatFiles = [];
 	let files = [];
 	let params = {};
+	let toolsEnabled = false;
 
 	$: if (chatIdProp) {
 		navigateHandler();
@@ -2554,8 +2555,10 @@
 				params: {
 					...$settings?.params,
 					...params,
+					function_calling: toolsEnabled ? 'native' : 'legacy',
 					stop: getStopTokens()
 				},
+				tools: toolsEnabled ? undefined : [],
 
 				files: (files?.length ?? 0) > 0 ? files : undefined,
 
@@ -3298,6 +3301,7 @@
 										bind:selectedSkillIds
 										bind:selectedFilterIds
 										bind:imageGenerationEnabled
+										bind:toolsEnabled
 										bind:codeInterpreterEnabled
 										{pendingOAuthTools}
 										bind:webSearchEnabled
@@ -3382,6 +3386,7 @@
 									bind:selectedSkillIds
 									bind:selectedFilterIds
 									bind:imageGenerationEnabled
+									bind:toolsEnabled
 									bind:codeInterpreterEnabled
 									bind:webSearchEnabled
 									bind:atSelectedModel
