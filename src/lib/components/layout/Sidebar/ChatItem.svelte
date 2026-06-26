@@ -107,10 +107,7 @@
 
 	$: effectiveReadAt = Math.max(lastReadAt ?? 0, viewedAt ?? 0) || null;
 
-	$: unread =
-		id !== $chatId &&
-		!$activeChatIds.has(id) &&
-		(effectiveReadAt === null || (updatedAt !== null && updatedAt > effectiveReadAt));
+	$: unread = false;
 
 	const loadChat = async () => {
 		if (!chat) {
