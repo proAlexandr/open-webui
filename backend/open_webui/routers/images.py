@@ -981,6 +981,11 @@ async def image_edits(
                     )
                     else {'response_format': 'b64_json'}
                 ),
+                **(
+                    {}
+                    if not image_config.IMAGES_OPENAI_API_PARAMS
+                    else image_config.IMAGES_OPENAI_API_PARAMS
+                ),
             }
 
             files = []
